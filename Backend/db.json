@@ -1,4 +1,194 @@
 {
-    "cities": []
-
+  "cities": [
+    {
+      "id": "bd31",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "fe84",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "2f08",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "a508",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "a84e",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "e172",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "f01b",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "e605",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "0c30",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "8d74",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "153b",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "9d7e",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "7db7",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "6ee7",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "7da9",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "5883",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "8424",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "1681",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.19,
+      "feels_like": 306.67,
+      "icon": "04n",
+      "humidity": 88,
+      "description": "broken clouds"
+    },
+    {
+      "id": "4e94",
+      "city": "delhi",
+      "country": "IN",
+      "temp": 301.04,
+      "feels_like": 306.38,
+      "icon": "10n",
+      "humidity": 89,
+      "description": "light rain"
+    }
+  ]
 }

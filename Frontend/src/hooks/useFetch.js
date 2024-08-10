@@ -6,16 +6,14 @@ import {
   setSuccess,
 } from "../redux/reducers/fetchReducer";
 
-export const useFetch = () => {
+export const useFetch = ( url) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     const getData = async () => {
       dispatch(setLoading());
       try {
-        const response = await fetch(
-          "https://api.openweathermap.org/data/2.5/forecast?lat=28.7041&lon=77.1025&appid=535adb5939080eb74a7dd06ad6ffe5e3"
-        );
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error(response.statusText);
         }
@@ -27,5 +25,5 @@ export const useFetch = () => {
     };
 
     getData();
-  }, []);
+  }, [ url, dispatch]);
 };
