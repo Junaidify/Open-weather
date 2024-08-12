@@ -30,7 +30,7 @@ const Fetch = () => {
   useEffect(() => {
     if (saveToWishList) {
       axios
-        .post("http://localhost:3000/cities", {
+        .post("https://open-weather-bpgp.onrender.com/cities", {
           city: saveToWishList,
           country: city.country,
           temp: list[0].main.temp,
