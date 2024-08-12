@@ -14,21 +14,21 @@
 }
 
 #container {
-  width: 60%;
-  height: 80%;
+  width: 50%;
+  height: 60%;
   background-color: rgba(0, 0, 0, 0.5);
-  transform: translate(35%, 10%);
+  transform: translate(50%, 20%);
   border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   color: white;
   position: relative;
   overflow-x: hidden;
+  padding-top: 5vh;
 }
 
 #container div:nth-child(1) {
-  margin-left: 5vw;
-  margin-top: 5vh;
+  margin: 0 0 0 2vw;
 }
 
 #search {
@@ -66,8 +66,8 @@
 
 .wishlist_icon {
   font-size: 1.5rem;
-  margin-top: 3vh;
-  margin-right: 3vw;
+  margin-left: 2vw;
+  cursor: pointer;
 }
 
 .wishlist_icon:active {
@@ -77,7 +77,7 @@
 #forecast {
   display: flex;
   position: absolute;
-  bottom: 3vh;
+  bottom: 5vh;
   left: 0;
   column-gap: 1vw;
 }
@@ -97,21 +97,25 @@
 #forecast button {
   color: red;
   position: absolute;
-  bottom: 0;
+  bottom: 7vh;
   left: 0;
   font-size: 1rem;
-  border-radius: 10px;
   border: none;
-  padding: 0.5vh 1vw;
+  padding: 1vh 0.5vw;
+  transform: translateX(50%);
 }
 
 #forecast .prev {
-  left: 2vw;
+  left: -1vw;
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
 }
 
 #forecast .next {
-  left: 52vw;
+  left: 47.7vw;
   color: red;
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
 }
 
 .carousel-container {
@@ -123,10 +127,13 @@
 .carousel {
   display: flex;
   overflow: hidden;
-  column-gap: 0.5vw;
+  column-gap: 1vw;
+  scroll-behavior: smooth;
 }
 
 .prev:hover,
 .next:hover {
   background-color: #ccc;
 }
+
+

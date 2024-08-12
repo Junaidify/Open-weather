@@ -2,21 +2,31 @@ import "../styles/weather.css";
 import { useSelector } from "react-redux";
 import { useFetch } from "../hooks/useFetch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faLocationDot } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
+import {
+  faChevronLeft,
+  faChevronRight,
+  faHeart,
+  faLocationDot,
+} from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import day from "../images/day.jpg";
+import night from "../images/night2.jpg";
 
 const Fetch = () => {
   const { isLoading, isError, data } = useSelector((state) => state.fetch);
   const [searchCity, setSearchCity] = useState("");
   const [currentCity, setCurrentCity] = useState("delhi");
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const slidesToShow = 5;
-  const [saveToWishList, setSaveToWishList] = useState();
-
+  const [saveToWishList, setSaveToWishList] = useState(null);
   const { city, list } = data || {};
+  const cityRef = useRef(null);
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [time, setTime] = useState(new Date());
 
-  useFetch(`https://api.openweathermap.org/data/2.5/forecast?q=${currentCity}&appid=535adb5939080eb74a7dd06ad6ffe5e3`);
+  useFetch(
+    `https://api.openweathermap.org/data/2.5/forecast?q=${currentCity}&appid=535adb5939080eb74a7dd06ad6ffe5e3`
+  );
+
   useEffect(() => {
     if (saveToWishList) {
       axios
@@ -30,25 +40,58 @@ const Fetch = () => {
           description: list[0].weather[0].description,
         })
         .then((response) => {
-          console.log(response.data);
+          console.log("City saved:", response.data);
         })
         .catch((error) => {
-          console.error(error);
+          console.error("Error saving city:", error);
         });
     }
-  }, [saveToWishList, list]);
+  }, [saveToWishList, city, list]);
+
+  const handleSaveCityToWishlist = () => {
+    setSaveToWishList(currentCity);
+    alert("City added to wishlist");
+  };
 
   useEffect(() => {
-    localStorage.setItem("currentCity", currentCity);
-  }, [currentCity]);
-
-  if (isLoading) return <h1>Loading...</h1>;
-  if (isError) return <h1>Error</h1>;
+    const getSearchedCity = localStorage.getItem("currentCity");
+    if (getSearchedCity && searchCity.length < 5) {
+      localStorage.setItem("currentCity", searchCity);
+    }
+  }, [searchCity]);
 
   const handleSearchCity = () => {
     setCurrentCity(searchCity);
     setSearchCity("");
   };
+
+  useEffect(() => {
+    if (cityRef.current) {
+      const slideWidth =
+        cityRef.current.clientWidth / cityRef.current.children.length;
+      cityRef.current.style.transition = "transform 0.5s ease-in-out";
+      cityRef.current.style.transform = `translateX(-${
+        slideIndex * slideWidth
+      }px)`;
+    }
+  }, [slideIndex]);
+
+  const handlePrev = () => {
+    slideIndex > 0 &&
+      setSlideIndex((prev) =>
+        prev === 0 ? cityRef.current.children.length - 1 : prev - 1
+      );
+  };
+
+  const handleNext = () => {
+    slideIndex < cityRef.current.children.length - 1 &&
+      setSlideIndex((prev) =>
+        prev === cityRef.current.children.length - 1 ? 0 : prev + 1
+      );
+  };
+
+  if (isLoading) return <h1>Loading...</h1>;
+  if (isError) return <h1>Error</h1>;
 
   const kelvinToCelsius = (kelvin) => (kelvin - 273.15).toFixed(2);
 
@@ -57,24 +100,12 @@ const Fetch = () => {
   const temp = kelvinToCelsius(list[0].main.temp);
   const feels_like = kelvinToCelsius(list[0].main.feels_like);
 
-  const handleSaveCityToWishlist = () => {
-    setSaveToWishList(currentCity);
-    alert("City added to wishlist");
-  };
-
-  const handlePrev = () => {
-    setCurrentSlide((prev) => Math.max(prev - slidesToShow, 0));
-  };
-
-  const handleNext = () => {
-    setCurrentSlide((prev) =>
-      Math.min(prev + slidesToShow, list.length - slidesToShow)
-    );
-  };
-
   return (
     <>
-      <div id="wrapper">
+      <div
+        id="wrapper"
+        style={{ backgroundImage: time < 18 ? `url(${night})` : `url(${day})` }}
+      >
         <div id="container">
           <div key={city?.id}>
             <p>
@@ -139,61 +170,59 @@ const Fetch = () => {
             </p>
           </div>
           <div id="forecast">
-            <div className="carousel">
-              {list
-                .slice(currentSlide, currentSlide + slidesToShow)
-                .map((item) => (
-                  <div key={item.dt} className="forecast_card">
-                    <p>{new Date(item.dt * 1000).toLocaleString()}</p>
-                    <p
-                      style={{
-                        fontSize: "2.5rem",
-                        marginBottom: "1vh",
-                        marginTop: "0.2vh",
-                      }}
+            <div className="carousel" ref={cityRef}>
+              {list.map((item) => (
+                <div key={item.dt} className="forecast_card">
+                  <p>{new Date(item.dt * 1000).toLocaleString()}</p>
+                  <p
+                    style={{
+                      fontSize: "2.5rem",
+                      marginBottom: "1vh",
+                      marginTop: "0.2vh",
+                    }}
+                  >
+                    {kelvinToCelsius(item.main.temp)} °C
+                  </p>
+                  <p style={{ fontWeight: "bold" }}>
+                    <span
+                      style={{ fontWeight: "normal", marginRight: "0.3vw" }}
                     >
-                      {kelvinToCelsius(item.main.temp)} °C
-                    </p>
-                    <p style={{ fontWeight: "bold" }}>
-                      <span
-                        style={{ fontWeight: "normal", marginRight: "0.3vw" }}
-                      >
-                        feels like:
-                      </span>{" "}
-                      {kelvinToCelsius(item.main.feels_like)} °C
-                    </p>
-                    <p style={{ fontWeight: "bold" }}>
-                      <span
-                        style={{ fontWeight: "normal", marginRight: "0.3vw" }}
-                      >
-                        humidity:
-                      </span>{" "}
-                      {item.main.humidity} %
-                    </p>
-                    <p style={{ fontWeight: "bold" }}>
-                      <span
-                        style={{ fontWeight: "normal", marginRight: "0.3vw" }}
-                      >
-                        Weather:
-                      </span>{" "}
-                      {item.weather[0].description}
-                    </p>
-                    <p style={{ fontWeight: "bold" }}>
-                      <span
-                        style={{ fontWeight: "normal", marginRight: "0.3vw" }}
-                      >
-                        Wind Speed:
-                      </span>{" "}
-                      {item.wind.speed} m/s
-                    </p>
-                  </div>
-                ))}
+                      feels like:
+                    </span>{" "}
+                    {kelvinToCelsius(item.main.feels_like)} °C
+                  </p>
+                  <p style={{ fontWeight: "bold" }}>
+                    <span
+                      style={{ fontWeight: "normal", marginRight: "0.3vw" }}
+                    >
+                      humidity:
+                    </span>{" "}
+                    {item.main.humidity} %
+                  </p>
+                  <p style={{ fontWeight: "bold" }}>
+                    <span
+                      style={{ fontWeight: "normal", marginRight: "0.3vw" }}
+                    >
+                      Weather:
+                    </span>{" "}
+                    {item.weather[0].description}
+                  </p>
+                  <p style={{ fontWeight: "bold" }}>
+                    <span
+                      style={{ fontWeight: "normal", marginRight: "0.3vw" }}
+                    >
+                      Wind Speed:
+                    </span>{" "}
+                    {item.wind.speed} m/s
+                  </p>
+                </div>
+              ))}
             </div>
             <button className="prev" onClick={handlePrev}>
-              Prev
+              <FontAwesomeIcon icon={faChevronLeft} />
             </button>
             <button className="next" onClick={handleNext}>
-              Next
+              <FontAwesomeIcon icon={faChevronRight} />
             </button>
           </div>
         </div>

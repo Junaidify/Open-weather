@@ -10,6 +10,7 @@ const Favourite = () => {
   useFetch(`http://localhost:3000/cities`);
   const { isLoading, isError, data } = useSelector((state) => state.fetch);
   const [deleteCityId, setDeleteCityId] = useState(null);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   useEffect(() => {
     if (deleteCityId !== null) {
@@ -18,7 +19,10 @@ const Favourite = () => {
         .then((res) => {
           console.log(res.data);
           setDeleteCityId(null);
-          setCity(false);
+          setIsDeleted(true);
+        })
+        .then((res) => {
+          console.log(res.data);
         })
         .catch((err) => {
           console.log(err);
@@ -26,12 +30,19 @@ const Favourite = () => {
     }
   }, [deleteCityId]);
 
-  if (isLoading) return <h1>Loading...</h1>;
-  if (isError) return <h1>Error</h1>;
+  if (isDeleted) {
+    alert("City deleted");
+    setIsDeleted(false);
+  }
 
   const handleDelete = (cityId) => {
     setDeleteCityId(cityId);
   };
+
+  if (isLoading) return <h1>Loading...</h1>;
+  if (isError) return <h1>Error</h1>;
+
+  console.log(data)
 
   return (
     <div>
