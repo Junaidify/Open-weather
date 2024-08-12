@@ -7,7 +7,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
 const Favourite = () => {
-  useFetch(`http://localhost:3000/cities`);
+  useFetch(`https://open-weather-bpgp.onrender.com/cities`);
   const { isLoading, isError, data } = useSelector((state) => state.fetch);
   const [deleteCityId, setDeleteCityId] = useState(null);
   const [isDeleted, setIsDeleted] = useState(false);
@@ -15,7 +15,7 @@ const Favourite = () => {
   useEffect(() => {
     if (deleteCityId !== null) {
       axios
-        .delete(`http://localhost:3000/cities/${deleteCityId}`)
+        .delete(`https://open-weather-bpgp.onrender.com/cities/${deleteCityId}`)
         .then((res) => {
           console.log(res.data);
           setDeleteCityId(null);
