@@ -1,5 +1,15 @@
 {
+  "name": "Backend",
+  "version": "1.0.0",
+  "description": "Deploy",
+  "main": "index.js",
+ "scripts": {
+  "start": "node index.js"
+},
+  "keywords": [],
+  "author": "Junaid Khan",
+  "license": "ISC",
   "dependencies": {
-    "json-server": "^1.0.0-beta.1"
+    "json-server": "^0.17.0"
   }
 }
