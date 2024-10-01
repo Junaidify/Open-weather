@@ -1,233 +1,132 @@
-import "../styles/weather.css";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import { useFetch } from "../hooks/useFetch";
+import { useSelector } from "react-redux";
+
+import "../styles/weather.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronLeft,
-  faChevronRight,
-  faHeart,
-  faLocationDot,
-} from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useRef, useState } from "react";
-import axios from "axios";
-import day from "../images/day.jpg";
-import night from "../images/night2.jpg";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 const Fetch = () => {
+  const [current, setCurrent] = useState("");
+  const [search, setSearch] = useState("delhi");
   const { isLoading, isError, data } = useSelector((state) => state.fetch);
-  const [searchCity, setSearchCity] = useState("");
-  const [currentCity, setCurrentCity] = useState("delhi");
-  const [saveToWishList, setSaveToWishList] = useState(null);
-  const { city, list } = data || {};
-  const cityRef = useRef(null);
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [time, setTime] = useState(new Date());
+  const [uniqueDates, setUniqueDates] = useState([]);
 
-  useFetch(
-    `https://api.openweathermap.org/data/2.5/forecast?q=${currentCity}&appid=535adb5939080eb74a7dd06ad6ffe5e3`
-  );
+  useFetch(search);
+
+  const handleSearch = () => {
+    if (current && current.trim() !== "") {
+      setSearch(current);
+    }
+  };
 
   useEffect(() => {
-    if (saveToWishList) {
-      axios
-        .post("https://open-weather-bpgp.onrender.com/cities", {
-          city: saveToWishList,
-          country: city.country,
-          temp: list[0].main.temp,
-          feels_like: list[0].main.feels_like,
-          icon: list[0].weather[0].icon,
-          humidity: list[0].main.humidity,
-          description: list[0].weather[0].description,
-        })
-        .then((response) => {
-          console.log("City saved:", response.data);
-        })
-        .catch((error) => {
-          console.error("Error saving city:", error);
+    if (data.list && data.list.length) {
+      const uniqueDays = new Map();
+      data.list.filter((item) => {
+        const date = new Date(item.dt_txt).toLocaleDateString("en-US", {
+          month: "short",
+          weekday: "long",
+          day: "numeric",
         });
+
+        console.log(date);
+
+        if (!uniqueDays.has(date)) {
+          uniqueDays.set(date, item);
+        }
+
+        setUniqueDates([...uniqueDays.values()]);
+      });
     }
-  }, [saveToWishList, city, list]);
+  }, [data.list]);
 
-  const handleSaveCityToWishlist = () => {
-    setSaveToWishList(currentCity);
-    alert("City added to wishlist");
-  };
+  console.log(data.city);
 
-  useEffect(() => {
-    const getSearchedCity = localStorage.getItem("currentCity");
-    if (getSearchedCity && searchCity.length < 5) {
-      localStorage.setItem("currentCity", searchCity);
-    }
-  }, [searchCity]);
-
-  const handleSearchCity = () => {
-    setCurrentCity(searchCity);
-    setSearchCity("");
-  };
-
-  useEffect(() => {
-    if (cityRef.current) {
-      const slideWidth =
-        cityRef.current.clientWidth / cityRef.current.children.length;
-      cityRef.current.style.transition = "transform 0.5s ease-in-out";
-      cityRef.current.style.transform = `translateX(-${
-        slideIndex * slideWidth
-      }px)`;
-    }
-  }, [slideIndex]);
-
-  const handlePrev = () => {
-    slideIndex > 0 &&
-      setSlideIndex((prev) =>
-        prev === 0 ? cityRef.current.children.length - 1 : prev - 1
-      );
-  };
-
-  const handleNext = () => {
-    slideIndex < cityRef.current.children.length - 1 &&
-      setSlideIndex((prev) =>
-        prev === cityRef.current.children.length - 1 ? 0 : prev + 1
-      );
-  };
-
-  if (isLoading) return <h1>Loading...</h1>;
-  if (isError) return <h1>Error</h1>;
-
-  const kelvinToCelsius = (kelvin) => (kelvin - 273.15).toFixed(2);
-
-  if (!list || list.length === 0) return <h1>No data available</h1>;
-
-  const temp = kelvinToCelsius(list[0].main.temp);
-  const feels_like = kelvinToCelsius(list[0].main.feels_like);
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Something went wrong</div>;
 
   return (
-    <>
-      <div
-        id="wrapper"
-        style={{ backgroundImage: time < 18 ? `url(${night})` : `url(${day})` }}
-      >
-        <div id="container">
-          <div key={city?.id}>
-            <p>
-              <FontAwesomeIcon icon={faLocationDot} /> {city?.name}{" "}
-              {city?.country}
-            </p>
+    <div id="app_wrapper">
+      <h1>Discover the weather in </h1>
+      <h1>every city you go</h1>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                rowGap: "0.5vh",
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "2.5rem",
-                  marginBottom: "1vh",
-                  marginTop: "0.2vh",
-                }}
-              >
-                {temp}°C
+      <main id="weather">
+        <div className="search_box">
+          <input
+            type="text"
+            name="city"
+            id="city"
+            placeholder="Enter city name"
+            value={current}
+            onChange={(e) => setCurrent(e.target.value)}
+          />
+          <button onClick={handleSearch}>
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
+          </button>
+        </div>
+
+        <div id="weather_container">
+          {uniqueDates.slice(0, 3).map((item) => (
+            <div className="weather_content" key={item.dt}>
+              <p className="date">
+                {new Date(item.dt_txt).toLocaleDateString("en-US", {
+                  month: "short",
+                  weekday: "long",
+                  day: "numeric",
+                })}
               </p>
-              <p style={{ fontWeight: "bold" }}>
-                <span style={{ fontWeight: "normal", marginRight: "0.3vw" }}>
-                  feels like:
-                </span>{" "}
-                {feels_like}°C
+              <p className="temp">
+                {item.main.temp} <sup style={{ fontSize: "1rem" }}>&#8451;</sup>
               </p>
-              <p style={{ fontWeight: "bold" }}>
-                <span style={{ fontWeight: "normal", marginRight: "0.3vw" }}>
-                  humidity:
-                </span>{" "}
-                {list[0].main.humidity}%
-              </p>
-              <p style={{ fontWeight: "bold" }}>
-                <span style={{ fontWeight: "normal", marginRight: "0.3vw" }}>
-                  Weather:
-                </span>{" "}
-                {list[0].weather[0].description}
-              </p>
-              <p style={{ fontWeight: "bold" }}>
-                <span style={{ fontWeight: "normal", marginRight: "0.3vw" }}>
-                  Wind Speed:
-                </span>{" "}
-                {list[0].wind.speed} m/s
-              </p>
+              <p className="sky">{item.weather[0].description}</p>
             </div>
-          </div>
-          <div id="search">
-            <div>
-              <input
-                value={searchCity}
-                type="text"
-                placeholder="Enter city"
-                onChange={(e) => setSearchCity(e.target.value)}
-              />
-              <button onClick={handleSearchCity}>Search</button>
-            </div>
-            <p className="wishlist_icon" onClick={handleSaveCityToWishlist}>
-              <FontAwesomeIcon icon={faHeart} />
+          ))}
+        </div>
+      </main>
+      <div id="weather_info">
+        {data.city && (
+          <div className="sunrise" key={data.city.id}>
+            <p>
+              {data.city.name} {data.city.country}
             </p>
-          </div>
-          <div id="forecast">
-            <div className="carousel" ref={cityRef}>
-              {list.map((item) => (
-                <div key={item.dt} className="forecast_card">
-                  <p>{new Date(item.dt * 1000).toLocaleString()}</p>
-                  <p
-                    style={{
-                      fontSize: "2.5rem",
-                      marginBottom: "1vh",
-                      marginTop: "0.2vh",
-                    }}
-                  >
-                    {kelvinToCelsius(item.main.temp)} °C
-                  </p>
-                  <p style={{ fontWeight: "bold" }}>
-                    <span
-                      style={{ fontWeight: "normal", marginRight: "0.3vw" }}
-                    >
-                      feels like:
-                    </span>{" "}
-                    {kelvinToCelsius(item.main.feels_like)} °C
-                  </p>
-                  <p style={{ fontWeight: "bold" }}>
-                    <span
-                      style={{ fontWeight: "normal", marginRight: "0.3vw" }}
-                    >
-                      humidity:
-                    </span>{" "}
-                    {item.main.humidity} %
-                  </p>
-                  <p style={{ fontWeight: "bold" }}>
-                    <span
-                      style={{ fontWeight: "normal", marginRight: "0.3vw" }}
-                    >
-                      Weather:
-                    </span>{" "}
-                    {item.weather[0].description}
-                  </p>
-                  <p style={{ fontWeight: "bold" }}>
-                    <span
-                      style={{ fontWeight: "normal", marginRight: "0.3vw" }}
-                    >
-                      Wind Speed:
-                    </span>{" "}
-                    {item.wind.speed} m/s
-                  </p>
-                </div>
-              ))}
+            <div>
+              <p> Sunrise</p>
+              {new Date(data.city.sunrise).toLocaleTimeString("en-US", {
+                hour: "numeric",
+                day: "numeric",
+                minute: "numeric",
+              })}
             </div>
-            <button className="prev" onClick={handlePrev}>
-              <FontAwesomeIcon icon={faChevronLeft} />
-            </button>
-            <button className="next" onClick={handleNext}>
-              <FontAwesomeIcon icon={faChevronRight} />
-            </button>
+          </div>
+        )}
+
+        <div className="location">
+          <p>
+            {data.city.coord.lat}
+            <span>N</span>{" "}
+          </p>
+          <p>
+            {data.city.coord.lon}
+            <span>E</span>{" "}
+          </p>
+        </div>
+
+        <div className="sunset">
+          <p>
+            {data.city.name} {data.city.country}
+          </p>
+          <div>
+            <p> Sunset</p>
+            {new Date(data.city.sunset).toLocaleTimeString("en-US", {
+              hour: "numeric",
+              day: "numeric",
+              minute: "numeric",
+            })}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

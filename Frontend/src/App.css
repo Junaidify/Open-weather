@@ -1,14 +1,24 @@
-*{
+* {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
 }
 
-.navbar{
+.navbar {
+  background: url("./images/morning.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: fit-content; 
+  padding: 15dvh 0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  background-color: black;
-  font-size: 1.2rem;
+}
 
+:root {
+  --primary-color: rgb(124, 124, 238);
+  --secondary-color:green;
+  --white-color:black;
+  --black-color: red;
 }
