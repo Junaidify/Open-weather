@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { useFetch } from "../hooks/useFetch";
 import { useSelector } from "react-redux";
-
 import "../styles/weather.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import Skelaton from "./Skelaton";
 
 const Fetch = () => {
   const [current, setCurrent] = useState("");
   const [search, setSearch] = useState("delhi");
   const { isLoading, isError, data } = useSelector((state) => state.fetch);
   const [uniqueDates, setUniqueDates] = useState([]);
+  const [invalidCity, setInvalidCity] = useState(false);
 
-  useFetch(search);
+  const isValid = useFetch(search);
 
   const handleSearch = () => {
     if (current && current.trim() !== "") {
@@ -21,7 +22,15 @@ const Fetch = () => {
   };
 
   useEffect(() => {
-    if (data.list && data.list.length) {
+    if (!isValid) {
+      setInvalidCity(true);
+    } else {
+      setInvalidCity(false);
+    }
+  }, [isValid]);
+
+  useEffect(() => {
+    if (data.city) {
       const uniqueDays = new Map();
       data.list.filter((item) => {
         const date = new Date(item.dt_txt).toLocaleDateString("en-US", {
@@ -30,8 +39,6 @@ const Fetch = () => {
           day: "numeric",
         });
 
-        console.log(date);
-
         if (!uniqueDays.has(date)) {
           uniqueDays.set(date, item);
         }
@@ -39,11 +46,18 @@ const Fetch = () => {
         setUniqueDates([...uniqueDays.values()]);
       });
     }
-  }, [data.list]);
+  }, [data]);
 
-  console.log(data.city);
+  useEffect(() => {
+    if (invalidCity) {
+      alert("Invalid city entered. Resetting to default value.");
+      setSearch("delhi");
+      setCurrent("");
+      setInvalidCity(false);
+    }
+  }, [invalidCity]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div><Skelaton /></div>;
   if (isError) return <div>Something went wrong</div>;
 
   return (
@@ -84,6 +98,7 @@ const Fetch = () => {
           ))}
         </div>
       </main>
+
       <div id="weather_info">
         {data.city && (
           <div className="sunrise" key={data.city.id}>
@@ -91,7 +106,7 @@ const Fetch = () => {
               {data.city.name} {data.city.country}
             </p>
             <div>
-              <p> Sunrise</p>
+              <p>Sunrise</p>
               {new Date(data.city.sunrise).toLocaleTimeString("en-US", {
                 hour: "numeric",
                 day: "numeric",
@@ -104,11 +119,11 @@ const Fetch = () => {
         <div className="location">
           <p>
             {data.city.coord.lat}
-            <span>N</span>{" "}
+            <span>N</span>
           </p>
           <p>
             {data.city.coord.lon}
-            <span>E</span>{" "}
+            <span>E</span>
           </p>
         </div>
 
@@ -117,7 +132,7 @@ const Fetch = () => {
             {data.city.name} {data.city.country}
           </p>
           <div>
-            <p> Sunset</p>
+            <p>Sunset</p>
             {new Date(data.city.sunset).toLocaleTimeString("en-US", {
               hour: "numeric",
               day: "numeric",
